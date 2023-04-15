@@ -1,11 +1,14 @@
 
 import React, {Component} from "react";
+import { nanoid } from 'nanoid'
 
 class App extends Component {
   state = {
     contacts: [],
     name: ''
   };
+
+  loginInputId = nanoid();
 
   handleChange = event => {
     console.log(event.target.value);
@@ -15,6 +18,11 @@ class App extends Component {
   handleSubmit = event => {
     event.preventDefault();
       console.log(this.state);
+      this.reset();
+  }
+
+  reset = () => {
+    this.setState({name: ''})
   }
 
   render() {
