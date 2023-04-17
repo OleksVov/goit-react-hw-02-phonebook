@@ -1,92 +1,75 @@
 
 import React, {Component} from "react";
 import { nanoid } from 'nanoid'
+import Filter from "./Filter";
+import Contacts from "./Contacts/Contacts";
+import ContactForm from "./ContactForm/ContactForm";
 
 class App extends Component {
   state = {
     contacts: [
-      {id:nanoid() , name: 'Rosie Simpson', number: '459-12-56'},
-    {id: nanoid(), name: 'Hermione Kline'},
-    {id: nanoid(), name: 'Eden Clements'},
-    {id: nanoid(), name: 'Annie Copeland'},
+      {id:nanoid(), name: 'Rosie Simpson', number: '459-12-56'},
+      {id: nanoid(), name: 'Hermione Kline', number: '443-89-12'},
+      {id: nanoid(), name: 'Eden Clements', number: '645-17-79'},
+      {id: nanoid(), name: 'Annie Copeland', number: '227-91-26'},
     ],
-    name: '',
-    number: '',
+    filter: '',
+
   };
 
-  loginInputId = nanoid();
+  checkExistingContact = (array, newName) => {
+    return array.some(({ name }) => {
+      return newName.toLowerCase() === name.toLowerCase();
+    });
+  };
 
-  handleChange = event => {
-    console.log(event.target.value);
-    this.setState({name:event.target.value})
-  }
-  handleChangeNumber = event => {
-    console.log(event.target.value);
-    this.setState({number:event.target.value})
-  }
 
-  handleSubmit = event => {
-    event.preventDefault();
-      console.log(this.state);
-      console.log(this.state.contacts);
-      this.setState(
-        prevState => ({
-          contacts: [
-            ...prevState.contacts,
-          { id: nanoid(), name: this.state.name, number: this.state.number},
-          ]
-        })
-      )
-      this.reset();
+  addContacts = (name,number) => {
+    const checkContact =this.checkExistingContact(this.state.contacts, name);
+    if (checkContact) {
+      alert (`${name} is already in contacts`)
+      return;
+    }
+    
+    this.setState(
+      prevState => ({
+        contacts: [
+          ...prevState.contacts,
+        { id: nanoid(), name: name, number: number},
+        ]
+      })
+    )
   }
+  
+  deleteContact = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
 
-  reset = () => {
-    this.setState({name: ''})
+  changeFilter = event => {
+    this.setState({filter:event.target.value})
   }
 
   render() {
+
+    const {filter, contacts} = this.state;
+    
+
     return (
       <div>
-        <h2>Phonebook</h2>
-       <form onSubmit={this.handleSubmit}>
-       <label>
-       Name
-        <input
-    type="text"
-    name="name"
-    value={this.state.name}
-    onChange={this.handleChange}
-    pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-    title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-    required
-  />
-       </label>
-       Number
-       <label htmlFor="">
-
-       <input
-  type="tel"
-  name="number"
-  value={this.state.number}
-  onChange={this.handleChangeNumber}
-  pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-  title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-  required
-/>
-       </label>
-  <button type="submit">Add contact</button>
-       </form>
+        <h1>Phonebook</h1>
+        <ContactForm 
+        onSubmit={this.addContacts}
+        />
+      
        <h2>Contacts</h2>
-       <ul>
-        {this.state.contacts.map(({id, name, number}) => (
-          <li
-          key={id}>
-            <p>{name}:</p>
-            <p>{number}</p>
-          </li>
-        ))}
-        
-       </ul>
+       <Filter value={filter} onChange={this.changeFilter}/>
+       <Contacts
+       contacts={contacts}
+       filter={filter}
+       onDelete={this.deleteContact}/>
+      
       </div>
     );
   }
