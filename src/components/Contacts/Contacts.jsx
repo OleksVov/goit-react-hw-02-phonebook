@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import css from './Contacts.module.css'
 
 
 const Contacts = ({contacts, filter, onDelete}) => {
@@ -7,12 +8,13 @@ const Contacts = ({contacts, filter, onDelete}) => {
     const filterContacts = contacts.filter(contact => contact.name.toLowerCase().includes(normalizeFilter),);
 
     return (
-        <ul>
+        <ul className={css.list}>
         {filterContacts.map(({id, name, number}) => (
           <li
+          className={css.contactItem}
           key={id}>
-            <p>{name}: {number}</p>
-            <button type="button" onClick={() => onDelete(id)}>Delete</button>
+            <p className={css.nameContact}>{name}: {number}</p>
+            <button  className={css.buttonDelete} type="button" onClick={() => onDelete(id)}>Delete</button>
           </li>
         ))}
         

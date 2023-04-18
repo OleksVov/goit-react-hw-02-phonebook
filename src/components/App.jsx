@@ -1,7 +1,7 @@
 
 import React, {Component} from "react";
 import { nanoid } from 'nanoid'
-import Filter from "./Filter";
+import Filter from "./Filter/Filter";
 import Contacts from "./Contacts/Contacts";
 import ContactForm from "./ContactForm/ContactForm";
 
@@ -57,7 +57,9 @@ class App extends Component {
     
 
     return (
-      <div>
+      <div style={{
+        padding: 40,
+      }}>
         <h1>Phonebook</h1>
         <ContactForm 
         onSubmit={this.addContacts}
